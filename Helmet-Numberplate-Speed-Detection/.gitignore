@@ -1,0 +1,6 @@
+.idea/
+mydatabase
+app/__pycache__
+platevision/__pycache__
+app/__init__.py
+platevision/__init__.py
