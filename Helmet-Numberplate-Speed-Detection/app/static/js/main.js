@@ -70,34 +70,51 @@ document.addEventListener("DOMContentLoaded", function () {
 function handleOptionBoxClick(event) {
     const buttonId = event.currentTarget.id;
     const modalContent = document.getElementById('modal-results-content');
+    const uploadInput = document.getElementById('video-upload');
+
+    if (!uploadInput || !uploadInput.files || !uploadInput.files[0]) {
+        alert("Please upload a video file first!");
+        return;
+    }
 
     // Show modal using jQuery/Bootstrap
     $('#resultsModal').modal('show');
 
     if (modalContent) {
         // Add loading state
-        modalContent.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; padding: 40px;"><i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--primary-color);"></i></div>';
+        modalContent.innerHTML = '<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;"><i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--primary-color); margin-bottom: 20px;"></i><p>Analyzing video using YOLOv8 & EasyOCR...</p></div>';
 
-        setTimeout(() => {
-            let mockData = "";
-            switch (buttonId) {
-                case 'detect-helmet':
-                    mockData = `<p><span><i class="fas fa-head-side-mask"></i> Helmet Status:</span> <span style='color: #ef4444; font-weight: 600;'>No Helmet</span></p>
-                                <p><span><i class="fas fa-id-card"></i> Number Plate:</span> <span style='color: #6366f1; font-weight: 600;'>MH 12 AB 1234</span></p>`;
-                    break;
-                case 'detect-speed':
-                    mockData = `<p><span><i class="fas fa-tachometer-alt"></i> Estimated Speed:</span> <span style='color: #f59e0b; font-weight: 600;'>72 km/h</span></p>
-                                <p style='color: #ef4444; border: none; font-size: 0.9rem; width: 100%; text-align: center;'><i class="fas fa-exclamation-triangle"></i> Speed violation detected!</p>`;
-                    break;
-                case 'extract-numberplate':
-                    mockData = `<p><span><i class="fas fa-search"></i> OCR Extraction:</span> <span style='color: #10b981; font-weight: 600;'>IND MH12AB1234</span></p>
-                                <p><span><i class="fas fa-check-circle"></i> Confidence:</span> 94%</p>`;
-                    break;
-                default:
-                    mockData = "Running detection...";
-            }
-            modalContent.innerHTML = mockData;
-        }, 1200); // Increased delay slightly for better UX feel
+        const formData = new FormData();
+        formData.append('video', uploadInput.files[0]);
+
+        fetch('/process-video/', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    let html = "<h4><i class='fas fa-chart-bar'></i> Detection Results</h4><ul style='list-style: none; padding: 0;'>";
+                    if (result.data && result.data.length > 0) {
+                        result.data.forEach((item, index) => {
+                            html += `<li style='margin-bottom: 12px; padding: 15px; border-radius: 8px; background: rgba(99, 102, 241, 0.05); border-left: 4px solid var(--primary-color);'>
+                            <p style='margin: 0 0 8px 0;'><strong><i class="fas fa-car" style="color: var(--primary-color);"></i> Vehicle Detected</strong></p>
+                            <p style='margin: 0 0 5px 0;'><span><i class="fas fa-id-card"></i> Number Plate:</span> <span style='color: #10b981; font-weight: 600; font-size: 1.1em;'>${item.plate || 'Not detected'}</span></p>
+                            <p style='margin: 0; font-size: 0.85em; color: var(--text-muted);'><i class="fas fa-film"></i> Found at frame: ${item.frame}</p>
+                        </li>`;
+                        });
+                    } else {
+                        html += "<li style='padding: 15px; text-align: center; color: var(--text-muted);'>No vehicles or license plates detected in the sample frames.</li>";
+                    }
+                    html += "</ul>";
+                    modalContent.innerHTML = html;
+                } else {
+                    modalContent.innerHTML = `<div style="padding: 20px; text-align: center;"><i class="fas fa-exclamation-triangle fa-2x" style="color: #ef4444; margin-bottom: 10px;"></i><p style="color: #ef4444;">Error processing video: <br>${result.message}</p></div>`;
+                }
+            })
+            .catch(err => {
+                modalContent.innerHTML = `<div style="padding: 20px; text-align: center;"><i class="fas fa-wifi fa-2x" style="color: #ef4444; margin-bottom: 10px;"></i><p style="color: #ef4444;">Connection error: <br>${err.message}</p></div>`;
+            });
     }
 }
 

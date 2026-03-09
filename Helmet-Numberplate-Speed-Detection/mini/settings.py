@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'platevision.urls'
+ROOT_URLCONF = 'mini.urls'
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'platevision.wsgi.application'
+WSGI_APPLICATION = 'mini.wsgi.application'
 
 
 # Database
