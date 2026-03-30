@@ -8,348 +8,220 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: #f8f9fa; min-height: 100vh; padding-bottom: 100px; color: #0f172a; }
+        
+        /* Globals */
+        .neu-navbar {
+            background: #ffffff; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-bottom: 1px solid #e2e8f0;
+            position: sticky; top: 0; z-index: 1000;
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding-bottom: 70px;
-        }
+        .navbar-brand { font-size: 1.5em; font-weight: 600; color: #000; display: flex; align-items: center; letter-spacing: -0.5px; }
         
-        /* Mobile-first Header */
-        .mobile-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        .neu-card {
+            background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+            padding: 24px; margin-bottom: 20px; transition: all 0.3s ease;
         }
+        .neu-card:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.06); border-color: #cbd5e1; }
         
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
+        .neu-btn {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 24px; font-weight: 500; color: #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02); cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
         }
-        
-        .user-info h2 {
-            font-size: 1.5em;
-            margin-bottom: 5px;
-        }
-        
-        .user-info p {
-            opacity: 0.9;
-            font-size: 0.9em;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
+        .neu-btn:hover { color: #000; border-color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-decoration: none; }
+        .neu-btn:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .neu-btn-danger { color: #fff; background: #e53e3e; border: none; }
+        .neu-btn-danger:hover { background: #c53030; color: #fff; border: none; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(229,62,62,0.3); }
         
         /* Stats Cards */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            padding: 20px 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 10px 15px; max-width: 1200px; margin: 0 auto 20px auto; }
+        .stat-card { text-align: center; }
         
         .stat-icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2em; margin-bottom: 15px; display: inline-flex; align-items: center; justify-content: center;
+            width: 70px; height: 70px; border-radius: 50%; background: #f8f9fa; border: 1px solid #e2e8f0; color: #000;
         }
-        
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        
-        /* Vehicles Section */
-        .section {
-            padding: 20px 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            font-size: 1.3em;
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .vehicle-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid #10b981;
-        }
-        
-        .vehicle-number {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #10b981;
-            margin-bottom: 5px;
-        }
-        
-        .vehicle-info {
-            color: #666;
-            font-size: 0.9em;
-        }
-        
-        /* Violations Timeline */
-        .violation-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid #ef4444;
-            animation: slideIn 0.4s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .violation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-        
-        .violation-type {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .stat-value { font-size: 2.2em; font-weight: 600; color: #000; letter-spacing: -0.5px; }
+        .stat-label { color: #64748b; font-size: 0.9em; font-weight: 600; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Sections */
+        .section { padding: 10px 15px; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 1.4em; font-weight: 600; color: #000; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px; }
+
+        .vehicle-number { font-size: 1.6em; font-weight: 600; color: #000; margin-bottom: 5px; letter-spacing: -0.5px; }
+        .vehicle-info { color: #64748b; font-size: 0.95em; font-weight: 500; }
+
+        .violation-card { border-left: 5px solid transparent; }
+        .violation-card.severity-high { border-left-color: #ef4444; }
+        .violation-card.severity-medium { border-left-color: #f59e0b; }
+
+        .violation-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .violation-type { display: flex; align-items: center; gap: 15px; }
         
         .violation-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
+            width: 55px; height: 55px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6em; border: 1px solid #e2e8f0; background: #f8f9fa; color: #000;
         }
-        
-        .icon-speeding {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        .icon-helmet {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-        
-        .violation-details h4 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .violation-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-        
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .meta-label {
-            font-size: 0.8em;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .meta-value {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .severity-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-        
-        .severity-high {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        .severity-medium {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-        
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            color: #666;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 10px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .nav-item:hover, .nav-item.active {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-        
-        .nav-icon {
-            font-size: 1.3em;
-        }
-        
-        .nav-label {
-            font-size: 0.75em;
-            font-weight: 600;
-        }
-        
+
+        .icon-speeding { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+        .icon-helmet { background: #fffbeb; color: #f59e0b; border-color: #fde68a; }
+
+        .violation-details h4 { color: #000; margin-bottom: 5px; font-weight: 600; font-size: 1.2em; letter-spacing: -0.5px; }
+
+        .violation-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f1f5f9; }
+        .meta-item { display: flex; flex-direction: column; gap: 5px; }
+        .meta-label { font-size: 0.85em; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-value { font-weight: 500; color: #334155; font-size: 0.95em; }
+
+        .severity-badge { display: inline-block; padding: 8px 16px; border-radius: 12px; font-size: 0.85em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #f1f5f9; color: #475569; }
+        .severity-high .severity-badge { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .severity-medium .severity-badge { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); border-top: 1px solid #e2e8f0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #94a3b8; text-decoration: none; padding: 12px 24px; border-radius: 15px; transition: all 0.3s; cursor: pointer; font-weight: 600; }
+        .nav-item.active { color: #000; background: #f1f5f9; }
+        .nav-item:hover:not(.active) { color: #000; }
+        .nav-icon { font-size: 1.4em; }
+        .nav-label { font-size: 0.85em; }
+
         /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-        
-        .empty-state i {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-        
-        /* Responsive */
+        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 4em; margin-bottom: 20px; opacity: 0.5; color: #cbd5e1; }
+
         @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .violation-meta {
-                grid-template-columns: 1fr;
-            }
+            .stats-container { grid-template-columns: repeat(2, 1fr); }
+            .violation-meta { grid-template-columns: 1fr; }
+            .navbar-brand span { display: none; }
+            .neu-navbar { padding: 15px 20px; }
+        }
+
+        /* Real-time Update Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: #ef4444; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-new-item {
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Unlock Overlay */
+        #unlock-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ef4444 !important; z-index: 1000000 !important; 
+            display: flex !important; flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; cursor: pointer; transition: opacity 0.4s ease;
+            padding: 40px;
+        }
+        .unlock-btn {
+            background: #ef4444; color: white; border: none; padding: 20px 40px;
+            border-radius: 50px; font-weight: 700; font-size: 1.2em; margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+            animation: btn-pulse 2s infinite;
+        }
+        @keyframes btn-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        #unlock-overlay i.main-bell { font-size: 5em; margin-bottom: 25px; color: #ef4444; }
+        #unlock-overlay h2, #unlock-overlay h3 { font-weight: 700 !important; margin-bottom: 10px; color: #fff; }
+        #unlock-overlay p { opacity: 0.8; font-weight: 500; color: #cbd5e1; }
+        
+        .overlay-close {
+            position: absolute; top: 20px; right: 20px; 
+            padding: 10px 20px; background: rgba(255,255,255,0.1); 
+            border-radius: 10px; font-weight: 700; font-size: 0.9em;
+        }
+
+        @keyframes flashRed {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(239, 68, 68, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        .flash-alert {
+            animation: flashRed 0.5s ease-in-out 2;
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
-    <div class="mobile-header">
-        <div class="header-content">
+    <!-- Unlock Overlay for Browser Permissions -->
+    <div id="unlock-overlay" onclick="window.unlockBrowserAPIs();" ontouchstart="window.unlockBrowserAPIs();">
+        <div class="overlay-close"><i class="fas fa-times"></i> CLOSE</div>
+        <div class="unlock-btn">
+            <i class="fas fa-bell mr-2 main-bell"></i> TAP TO ACTIVATE ALERTS
+        </div>
+        <h3 style="font-weight: 700; margin-bottom: 5px;">Ready to Monitor</h3>
+        <p style="opacity: 0.8; font-weight: 400; font-size: 0.9em;">We need one tap to enable your phone's siren and vibration.</p>
+    </div>
+
+    <!-- Navbar -->
+    <div class="neu-navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-shield-alt" style="color: #000; margin-right: 12px;"></i>
+            <span>Traffic Monitor</span>
+        </div>
+        <a href="{% url 'logout' %}" class="neu-btn neu-btn-danger">
+            <i class="fas fa-sign-out-alt"></i> <span style="display:inline-block; margin-left:5px;">Logout</span>
+        </a>
+    </div>
+    
+    <!-- User Info Section -->
+    <div class="section">
+        <div class="neu-card" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
             <div class="user-info">
-                <h2>Welcome, {{ user_name }}!</h2>
-                <p><i class="fas fa-id-card"></i> {{ user_license }}</p>
-                <p><i class="fas fa-phone"></i> {{ user_phone }}</p>
+                <h2 style="margin-bottom: 5px; color: #2d3748; font-weight: 600; letter-spacing: -0.5px;">Welcome, {{ user_name }}!</h2>
+                <i class="fas fa-id-card"></i> {{ user_license }} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                    <i class="fas fa-phone"></i> {{ user_phone }} &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <span id="ws-status" style="color: #64748b; font-weight: 700;">
+                        <i class="fas fa-circle" id="ws-status-icon" style="color: #94a3b8; font-size: 0.8em;"></i> Alerts: Offline
+                    </span>
+                </p>
             </div>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
         </div>
     </div>
     
     <!-- Statistics -->
     <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #ef4444;">
+        <div class="neu-card stat-card">
+            <div class="stat-icon" style="color: #e53e3e;">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <div class="stat-value">{{ total_violations }}</div>
+            <div class="stat-value" id="total-violations-stat">{{ total_violations }}</div>
             <div class="stat-label">Total Violations</div>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #ef4444;">
+        <div class="neu-card stat-card">
+            <div class="stat-icon" style="color: #e53e3e;">
                 <i class="fas fa-tachometer-alt"></i>
             </div>
-            <div class="stat-value">{{ overspeeding_count }}</div>
+            <div class="stat-value" id="overspeeding-count-stat">{{ overspeeding_count }}</div>
             <div class="stat-label">Overspeeding</div>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #f59e0b;">
+        <div class="neu-card stat-card">
+            <div class="stat-icon" style="color: #dd6b20;">
                 <i class="fas fa-hard-hat"></i>
             </div>
-            <div class="stat-value">{{ no_helmet_count }}</div>
+            <div class="stat-value" id="no-helmet-count-stat">{{ no_helmet_count }}</div>
             <div class="stat-label">No Helmet</div>
         </div>
         
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #10b981;">
+        <div class="neu-card stat-card">
+            <div class="stat-icon" style="color: #48bb78;">
                 <i class="fas fa-car"></i>
             </div>
             <div class="stat-value">{{ registered_vehicles.count }}</div>
@@ -359,18 +231,18 @@
     
     <!-- Registered Vehicles -->
     <div class="section">
-        <h3 class="section-title">
-            <i class="fas fa-id-card"></i> My Registered Vehicles
+        <h3 class="section-title" style="margin-bottom: 25px;">
+            <i class="fas fa-id-card" style="color: #000;"></i> My Registered Vehicles
         </h3>
         
         {% if registered_vehicles %}
             {% for vehicle in registered_vehicles %}
-            <div class="vehicle-card">
+            <div class="neu-card vehicle-card">
                 <div class="vehicle-number">{{ vehicle.vehicle_number }}</div>
                 <div class="vehicle-info">
                     <i class="fas fa-calendar-alt"></i> Registered on {{ vehicle.created_at|date:"M d, Y" }}
                     {% if vehicle.is_active %}
-                        <span style="float: right; color: #10b981;">
+                        <span style="float: right; color: #48bb78; font-weight: 700;">
                             <i class="fas fa-check-circle"></i> Active
                         </span>
                     {% endif %}
@@ -378,79 +250,87 @@
             </div>
             {% endfor %}
         {% else %}
-            <div class="empty-state">
+            <div class="neu-card empty-state">
                 <i class="fas fa-car"></i>
-                <p>No vehicles registered yet</p>
-                <a href="{% url 'dashboard' %}" style="color: #667eea; text-decoration: none; display: block; margin-top: 10px;">
-                    Register a vehicle →
-                </a>
+                <p style="font-weight: 600; font-size: 1.2em;">No vehicles registered</p>
             </div>
         {% endif %}
     </div>
     
     <!-- Violations History -->
     <div class="section">
-        <h3 class="section-title">
-            <i class="fas fa-history"></i> Violation History
-        </h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h3 class="section-title" style="margin-bottom: 0;">
+                <i class="fas fa-history" style="color: #000;"></i> Violation History
+            </h3>
+            
+            <div id="clear-violations-btn-container" style="{% if not violations %}display: none;{% endif %}">
+                <!-- ACKNOWLEDGE & CLEAR BUTTON -->
+                <a href="{% url 'clear_violations' %}" class="neu-btn neu-btn-danger" style="margin-top: 5px;" onclick="return confirm('Do you acknowledge these violations and wish to clear your history? This cannot be undone.');">
+                    <i class="fas fa-trash-alt"></i> Acknowledge & Clear
+                </a>
+            </div>
+        </div>
         
-        {% if violations %}
-            {% for violation in violations %}
-            <div class="violation-card">
-                <div class="violation-header">
-                    <div class="violation-type">
-                        {% if violation.violation_type == 'overspeeding' %}
-                        <div class="violation-icon icon-speeding">
-                            <i class="fas fa-tachometer-alt"></i>
+        <div id="violations-history-container">
+            {% if violations %}
+                {% for violation in violations %}
+                <div class="neu-card violation-card severity-{{ violation.severity }}">
+                    <div class="violation-header">
+                        <div class="violation-type">
+                            {% if violation.violation_type == 'overspeeding' %}
+                            <div class="violation-icon icon-speeding">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            {% else %}
+                            <div class="violation-icon icon-helmet">
+                                <i class="fas fa-hard-hat"></i>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="violation-details">
+                                <h4>
+                                    {% if violation.violation_type == 'overspeeding' %}
+                                        Overspeeding - {{ violation.speed }}
+                                    {% else %}
+                                        No Helmet Detected
+                                    {% endif %}
+                                </h4>
+                                <p style="color: #718096; font-size: 0.95em; font-weight: 600;">
+                                    <i class="fas fa-id-card"></i> Plate: {{ violation.plate_number }}
+                                </p>
+                            </div>
                         </div>
-                        {% else %}
-                        <div class="violation-icon icon-helmet">
-                            <i class="fas fa-hard-hat"></i>
-                        </div>
-                        {% endif %}
                         
-                        <div class="violation-details">
-                            <h4>
-                                {% if violation.violation_type == 'overspeeding' %}
-                                    Overspeeding - {{ violation.speed }}
-                                {% else %}
-                                    No Helmet Detected
-                                {% endif %}
-                            </h4>
-                            <p style="color: #666; font-size: 0.9em;">
-                                <i class="fas fa-id-card"></i> Plate: {{ violation.plate_number }}
-                            </p>
-                        </div>
+                        <span class="severity-badge">
+                            {{ violation.severity }}
+                        </span>
                     </div>
                     
-                    <span class="severity-badge severity-{{ violation.severity }}">
-                        {{ violation.severity|upper }}
-                    </span>
-                </div>
-                
-                <div class="violation-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">Detected At</span>
-                        <span class="meta-value">{{ violation.frame_time }}</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Date</span>
-                        <span class="meta-value">{{ violation.detected_at|date:"M d, Y H:i" }}</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Video File</span>
-                        <span class="meta-value">{{ violation.video_file|truncatechars:20 }}</span>
+                    <div class="violation-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Detected At</span>
+                            <span class="meta-value">{{ violation.frame_time }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Date</span>
+                            <span class="meta-value">{{ violation.detected_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Video</span>
+                            <span class="meta-value">{{ violation.video_file|truncatechars:20 }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <i class="fas fa-check-circle"></i>
-                <p>No violations recorded</p>
-                <p style="font-size: 0.9em; margin-top: 10px;">Great job driving safely!</p>
-            </div>
-        {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="neu-card empty-state" id="empty-violations-state">
+                    <i class="fas fa-check-circle" style="color: #48bb78; opacity: 1;"></i>
+                    <p style="font-weight: 600; font-size: 1.4em; color: #2d3748; margin-bottom: 8px; letter-spacing: -0.5px;">No violations recorded</p>
+                    <p style="font-size: 1.1em; font-weight: 500;">Great job driving safely!</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
     
     <!-- Bottom Navigation -->
@@ -463,25 +343,479 @@
             <i class="fas fa-video nav-icon"></i>
             <span class="nav-label">Analyze</span>
         </a>
-        <a href="#" class="nav-item" onclick="openRegistrationModal(); return false;">
-            <i class="fas fa-user-plus nav-icon"></i>
-            <span class="nav-label">Register</span>
-        </a>
         <a href="{% url 'logout' %}" class="nav-item">
             <i class="fas fa-sign-out-alt nav-icon"></i>
             <span class="nav-label">Logout</span>
         </a>
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Warning Modal -->
+    <div class="modal fade" id="violationWarningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                <div class="modal-header" style="background: #ef4444; border: none; padding: 25px; color: white; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                    <div style="background: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5em;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="modal-title" id="warningModalLabel" style="font-weight: 700; letter-spacing: -0.5px; margin: 0;">TRAFFIC VIOLATION!</h3>
+                </div>
+                <div class="modal-body" style="padding: 30px; text-align: center;">
+                    <div id="violationModalDetails">
+                        <!-- Content populated via JS -->
+                        <h4 id="violationType" style="font-weight: 700; color: #000; margin-bottom: 20px;">Overspeeding Detected</h4>
+                        <div style="background: #f8f9fa; border-radius: 15px; padding: 20px; text-align: left; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                            <p style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+                                <strong style="color: #64748b;">Vehicle Plate:</strong>
+                                <span id="modalPlateNumber" style="font-weight: 700; color: #000;">DL 3C AB 1234</span>
+                            </p>
+                            <p style="margin-bottom: 10px; display: flex; justify-content: space-between;" id="speedContainer">
+                                <strong style="color: #64748b;">Detected Speed:</strong>
+                                <span id="modalSpeed" style="font-weight: 700; color: #ef4444;">85 km/h</span>
+                            </p>
+                            <p style="margin-bottom: 0; display: flex; justify-content: space-between;">
+                                <strong style="color: #64748b;">Time:</strong>
+                                <span id="modalTime" style="font-weight: 500; color: #000;">Just Now</span>
+                            </p>
+                        </div>
+                        <p style="color: #475569; font-weight: 500; line-height: 1.6;">
+                            Your vehicle has been recorded violating traffic safety rules. Please drive responsibly.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 0 30px 30px 30px;">
+                    <button id="acknowledgeViolationBtn" type="button" class="neu-btn" data-bs-dismiss="modal" style="width: 100%; justify-content: center; background: #000; color: #fff; border: none; padding: 15px; border-radius: 15px; font-weight: 600; font-size: 1.1em;">
+                        I Understand & Back to Safety
+                    </button>
+                    <p style="width: 100%; text-align: center; margin-top: 15px; font-size: 0.85em; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                        Safety First • Traffic Monitor
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script>
         function openRegistrationModal() {
             // Redirect to main dashboard for registration
             window.location.href = '{% url "dashboard" %}';
         }
-    </script>
+        
+        // WebSocket Connection for Real-time Vibration Notifications
+        (function() {
+            'use strict';
+            
+            // State Variables
+            const userPhone = '{{ user_phone }}';
+            let vibrationWebSocket = null;
+            let vibrationEnabled = false;
+            let vibrationInterval = null;
+            let soundInterval = null;
+            let activeOscillator = null;
+            let audioCtx = null;
+
+            // Define unlock globally so HTML attributes can see it
+            window.unlockBrowserAPIs = function() {
+                try {
+                    vibrationEnabled = true;
+                    // Unlock Audio
+                    if (!audioCtx) {
+                        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContextClass) audioCtx = new AudioContextClass();
+                    }
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    // Unlock Vibration
+                    if ('vibrate' in navigator) {
+                        try { navigator.vibrate(20); } catch(e) {}
+                    }
+                } catch(e) { 
+                    console.error('Unlock error:', e); 
+                }
+
+                // Hide overlay immediately
+                const overlay = document.getElementById('unlock-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                    setTimeout(() => { if (overlay) overlay.style.display = 'none'; }, 500);
+                }
+            };
+            
+            // Check if browser supports vibration API
+            function isVibrationSupported() {
+                return 'vibrate' in navigator;
+            }
+            
+            // Request vibration permission (required by some browsers)
+            async function requestVibrationPermission() {
+                try {
+                    if ('permissions' in navigator) {
+                        const result = await navigator.permissions.query({ name: 'vibrate' });
+                        return result.state === 'granted';
+                    }
+                    return true; // Assume granted if permissions API not available
+                } catch (e) {
+                    return true;
+                }
+            }
+            
+            // Execute vibration pattern
+            function vibrate(pattern) {
+                if (isVibrationSupported()) {
+                    try {
+                        navigator.vibrate(pattern);
+                        console.log('Vibrating with pattern:', pattern);
+                    } catch(e) {
+                        console.log('Vibration blocked by browser:', e);
+                    }
+                } else {
+                    console.log('Vibration API not supported on this device');
+                }
+            }
+            
+            // Show notification toast
+            function showNotification(message, type = 'warning') {
+                // Create or get notification container
+                let container = document.getElementById('notification-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'notification-container';
+                    container.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        max-width: 400px;
+                    `;
+                    document.body.appendChild(container);
+                }
+                
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    background: ${type === 'danger' ? '#ef4444' : '#f59e0b'};
+                    color: white;
+                    padding: 15px 20px;
+                    margin-bottom: 10px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    animation: slideInRight 0.3s ease-out;
+                `;
+                notification.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>${message}</strong>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease-out';
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }
+            
+            // Connect to WebSocket
+            function connectWebSocket() {
+                if (!userPhone || !isVibrationSupported()) {
+                    console.log('Vibration API not supported or no phone number');
+                    return;
+                }
+                
+                // Build WebSocket URL
+                const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${wsProtocol}//${window.location.host}/ws/notifications/${userPhone}/`;
+                
+                console.log('Connecting to WebSocket:', wsUrl);
+                
+                vibrationWebSocket = new WebSocket(wsUrl);
+                
+                // Connection opened
+                vibrationWebSocket.onopen = function(event) {
+                    console.log('WebSocket connected');
+                    vibrationEnabled = true;
+                    
+                    const statusIcon = document.getElementById('ws-status-icon');
+                    const statusText = document.getElementById('ws-status');
+                    if (statusIcon) statusIcon.style.color = '#48bb78';
+                    if (statusText) statusText.innerHTML = '<i class="fas fa-circle" id="ws-status-icon" style="color: #48bb78;"></i> Alerts: Online';
+                    
+                    // Send ping to keep connection alive
+                    setInterval(() => {
+                        if (vibrationWebSocket.readyState === WebSocket.OPEN) {
+                            vibrationWebSocket.send(JSON.stringify({
+                                type: 'ping',
+                                timestamp: new Date().toISOString()
+                            }));
+                        }
+                    }, 30000); // Ping every 30 seconds
+                };
+                
+                // Message received
+                vibrationWebSocket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'vibration_alert') {
+                        console.log('Violation alert received:', data);
+                        
+                        // Populate modal details
+                        const vType = data.violation_type || 'Traffic Violation';
+                        document.getElementById('violationType').textContent = vType.toUpperCase();
+                        document.getElementById('modalPlateNumber').textContent = data.plate_number;
+                        
+                        const speedEl = document.getElementById('modalSpeed');
+                        const speedCont = document.getElementById('speedContainer');
+                        if (data.speed) {
+                            speedEl.textContent = data.speed;
+                            speedCont.style.display = 'flex';
+                        } else {
+                            speedCont.style.display = 'none';
+                        }
+                        
+                        document.getElementById('modalTime').textContent = new Date().toLocaleTimeString();
+                        
+                        // Perform Real-time UI Updates without reload
+                        updateDashboardStats(data);
+                        addNewViolationToHistory(data);
+                        
+                        // Stop any previous alerting
+                        stopAlerts();
+
+                        // Start Looping Vibration
+                        if (isVibrationSupported()) {
+                            // Calculate pattern total time to know how often to repeat
+                            const pattern = data.vibration_pattern || [500, 200, 500];
+                            const patternDuration = Array.isArray(pattern) ? pattern.reduce((a, b) => a + b, 0) : 500;
+                            
+                            vibrate(pattern); // Initial vibration
+                            vibrationInterval = setInterval(() => vibrate(pattern), patternDuration + 1000);
+                        }
+
+                        // Start Looping Sound
+                        playAlertSound(); // Initial sound
+                        soundInterval = setInterval(playAlertSound, 1500);
+
+                        // Show Warning Modal (Bootstrap 5 way)
+                        const modalEl = document.getElementById('violationWarningModal');
+                        if (modalEl) {
+                            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                            if (modalEl.classList.contains('show')) {
+                                // If already visible, flash to signal NEW alert
+                                document.querySelector('.modal-content').classList.add('flash-alert');
+                                setTimeout(() => document.querySelector('.modal-content').classList.remove('flash-alert'), 1100);
+                            } else {
+                                bsModal.show();
+                            }
+                        }
+                        
+                        // Also show a temporary notification just in case
+                        const messageType = data.severity === 'high' ? 'danger' : 'warning';
+                        showNotification(data.message || 'New violation detected!', messageType);
+                    }
+                };
+
+                // Function to stop persistent alerts
+                function stopAlerts() {
+                    if (vibrationInterval) {
+                        clearInterval(vibrationInterval);
+                        vibrationInterval = null;
+                    }
+                    if (soundInterval) {
+                        clearInterval(soundInterval);
+                        soundInterval = null;
+                    }
+                    if (activeOscillator) {
+                        try {
+                            activeOscillator.stop();
+                            activeOscillator = null;
+                        } catch(e) {}
+                    }
+                    if (isVibrationSupported()) {
+                        navigator.vibrate(0); // Stop currently running vibration
+                    }
+                    console.log('All alerts stopped');
+                }
+                
+                function updateDashboardStats(data) {
+                    // Update Total Violations
+                    const totalStat = document.getElementById('total-violations-stat');
+                    if (totalStat) {
+                        totalStat.textContent = parseInt(totalStat.textContent) + 1;
+                        totalStat.style.animation = 'pulse 0.5s ease-in-out';
+                        setTimeout(() => totalStat.style.animation = '', 500);
+                    }
+                    
+                    // Update specific violation counter
+                    const type = (data.violation_type || '').toLowerCase();
+                    if (type.includes('speed')) {
+                        const speedStat = document.getElementById('overspeeding-count-stat');
+                        if (speedStat) speedStat.textContent = parseInt(speedStat.textContent) + 1;
+                    } else if (type.includes('helmet')) {
+                        const helmetStat = document.getElementById('no-helmet-count-stat');
+                        if (helmetStat) helmetStat.textContent = parseInt(helmetStat.textContent) + 1;
+                    }
+                }
+                
+                function addNewViolationToHistory(data) {
+                    const container = document.getElementById('violations-history-container');
+                    const emptyState = document.getElementById('empty-violations-state');
+                    const clearBtnContainer = document.getElementById('clear-violations-btn-container');
+                    
+                    if (!container) return;
+                    if (emptyState) emptyState.style.display = 'none';
+                    if (clearBtnContainer) clearBtnContainer.style.display = 'block';
+                    
+                    const isOverspeeding = (data.violation_type || '').toLowerCase().includes('speed');
+                    const iconClass = isOverspeeding ? 'fa-tachometer-alt' : 'fa-hard-hat';
+                    const iconBg = isOverspeeding ? 'icon-speeding' : 'icon-helmet';
+                    
+                    const violationHtml = `
+                        <div class="neu-card violation-card severity-${data.severity} animate-new-item">
+                            <div class="violation-header">
+                                <div class="violation-type">
+                                    <div class="violation-icon ${iconBg}">
+                                        <i class="fas ${iconClass}"></i>
+                                    </div>
+                                    <div class="violation-details">
+                                        <h4>${isOverspeeding ? ('Overspeeding - ' + (data.speed || 'Detected')) : 'No Helmet Detected'}</h4>
+                                        <p style="color: #718096; font-size: 0.95em; font-weight: 600;">
+                                            <i class="fas fa-id-card"></i> Plate: ${data.plate_number}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="severity-badge">${data.severity}</span>
+                            </div>
+                            <div class="violation-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Detected At</span>
+                                    <span class="meta-value">Just Now</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Date</span>
+                                    <span class="meta-value">${new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })} ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Video</span>
+                                    <span class="meta-value">Live Stream</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = violationHtml;
+                    container.insertBefore(tempDiv.firstElementChild, container.firstChild);
+                }
+                
+                // Connection closed
+                vibrationWebSocket.onclose = function(event) {
+                    console.log('WebSocket disconnected');
+                    vibrationEnabled = false;
+                    
+                    const statusText = document.getElementById('ws-status');
+                    if (statusText) statusText.innerHTML = '<i class="fas fa-circle" style="color: #ef4444;"></i> Alerts: Offline (Reconnecting...)';
+                    
+                    // Attempt to reconnect after 5 seconds
+                    setTimeout(connectWebSocket, 5000);
+                };
+                
+                // Connection error
+                vibrationWebSocket.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    const statusText = document.getElementById('ws-status');
+                    if (statusText) statusText.innerHTML = '<i class="fas fa-circle" style="color: #ef4444;"></i> Alerts: Error';
+                };
+            }
+            
+            // Play alert sound using Web Audio API (No files needed)
+            function playAlertSound() {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    
+                    // Stop any previous instance
+                    if (activeOscillator) {
+                        try { activeOscillator.stop(); } catch(e) {}
+                    }
+
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    // Siren-like sound
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // 800 Hz
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+                    
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.1);
+                    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                    
+                    activeOscillator = oscillator;
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + 0.6);
+                    
+                    // Cleanup reference after it finishes naturally
+                    oscillator.onended = () => {
+                        if (activeOscillator === oscillator) activeOscillator = null;
+                    };
+                } catch (e) {
+                    console.log('Audio API not supported or blocked');
+                }
+            }
+            
+            // Add CSS animations for notifications
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+                // Initialize WebSocket connection when page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Connect WebSocket immediately so modal alerts work
+                    connectWebSocket();
+                    
+                    // Setup Modal Stop (Safe check)
+                    try {
+                        const modalEl = document.getElementById('violationWarningModal');
+                        const ackBtn = document.getElementById('acknowledgeViolationBtn');
+                        
+                        if (ackBtn) ackBtn.addEventListener('click', stopAlerts);
+                        if (modalEl) {
+                            modalEl.addEventListener('hidden.bs.modal', stopAlerts);
+                        }
+                    } catch(e) { console.log('UI Enhancement Error:', e); }
+                });
+            })();
+        </script>
+
+    <!-- Essential Scripts: jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

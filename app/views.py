@@ -3,7 +3,15 @@ from django.views import View
 from .models import CustomUser, RegisteredUser, UserViolation
 from django.shortcuts import redirect
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 import json
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import re
+
+def normalize_plate(plate):
+    if not plate: return ''
+    return re.sub(r'[^A-Z0-9]', '', str(plate).upper())
 
 
 def home(request):
@@ -14,7 +22,7 @@ def register(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        license_number = request.POST.get('license_number')
+        license_number = normalize_plate(request.POST.get('license_number'))
         phone = request.POST.get('phone')
         address = request.POST.get('address')
         age = request.POST.get('age')
@@ -36,6 +44,13 @@ def register(request):
             age=age
         )
         user.save()
+        
+        # Automatically register the vehicle to enable immediate alerts
+        RegisteredUser.objects.get_or_create(
+            phone_number=phone,
+            defaults={'vehicle_number': license_number}
+        )
+        
         return redirect('login')
     return render(request, 'app/register.html')
 
@@ -43,7 +58,7 @@ def register(request):
 def user_login(request):
     """User login page"""
     if request.method == 'POST':
-        license_number = request.POST.get('license_number')
+        license_number = normalize_plate(request.POST.get('license_number'))
         phone = request.POST.get('phone')
         
         try:
@@ -106,8 +121,20 @@ def user_dashboard(request):
         return redirect('login')
 
 
-
-
+def clear_violations(request):
+    """Clear all violations for the logged-in user after they acknowledge them"""
+    license_number = request.session.get('user_license')
+    if not license_number:
+        return redirect('login')
+    
+    try:
+        custom_user = CustomUser.objects.get(license_number=license_number)
+        registered_vehicles = RegisteredUser.objects.filter(phone_number=custom_user.phone)
+        UserViolation.objects.filter(registered_user__in=registered_vehicles).delete()
+    except CustomUser.DoesNotExist:
+        pass
+        
+    return redirect('user_dashboard')
 def dashboard(request):
     email = request.session.get('user_email')
     context = {'email': email}
@@ -144,15 +171,15 @@ def process_video(request):
             results = process_video_file(file_path)
             
             # Trigger vibration alerts for registered users
-            violating_plates = results.get('violating_plates', [])
-            if violating_plates:
-                # Make internal request to trigger alerts
-                alert_response = trigger_vibration_alert_internal(violating_plates, video_file.name)
+            violations = results.get('violations', [])
+            if violations:
+                # Make internal request to trigger alerts with detailed violation info
+                alert_response = trigger_vibration_alert_internal(violations, video_file.name)
                 results['alerts'] = alert_response
                 
                 # Save violations to database for registered users
                 for violation in results.get('violations', []):
-                    plate = violation.get('plate', '').upper().strip()
+                    plate = normalize_plate(violation.get('plate'))
                     if plate and plate != 'UNREADABLE':
                         try:
                             registered_user = RegisteredUser.objects.get(
@@ -193,7 +220,7 @@ def register_vehicle(request):
         try:
             data = json.loads(request.body)
             phone_number = data.get('phone_number')
-            vehicle_number = data.get('vehicle_number', '').upper().strip()
+            vehicle_number = normalize_plate(data.get('vehicle_number'))
             
             if not phone_number or not vehicle_number:
                 return JsonResponse({
@@ -283,7 +310,7 @@ def trigger_vibration_alert(request):
             # Find matching registered users
             alerts_sent = []
             for plate in violating_plates:
-                plate_clean = plate.upper().strip()
+                plate_clean = normalize_plate(plate)
                 matched_users = RegisteredUser.objects.filter(
                     vehicle_number=plate_clean,
                     is_active=True
@@ -318,10 +345,10 @@ def trigger_vibration_alert(request):
     }, status=400)
 
 
-def trigger_vibration_alert_internal(violating_plates, video_filename=None):
+def trigger_vibration_alert_internal(violations, video_filename=None):
     """Internal function to check for registered users and prepare alert data"""
     try:
-        if not violating_plates:
+        if not violations:
             return {
                 'status': 'success',
                 'message': 'No violations detected',
@@ -329,21 +356,48 @@ def trigger_vibration_alert_internal(violating_plates, video_filename=None):
                 'matched_users': []
             }
         
+        # Get channel layer for WebSocket notifications
+        channel_layer = get_channel_layer()
+        
         # Find matching registered users
         matched_users = []
-        for plate in violating_plates:
-            plate_clean = plate.upper().strip()
+        for violation in violations:
+            plate = violation.get('plate')
+            if not plate or plate == 'UNREADABLE':
+                continue
+                
+            plate_clean = normalize_plate(plate)
             registered_users = RegisteredUser.objects.filter(
                 vehicle_number=plate_clean,
                 is_active=True
             )
             
             for user in registered_users:
-                matched_users.append({
+                user_data = {
                     'phone_number': user.phone_number,
                     'vehicle_number': user.vehicle_number,
-                    'violation_plate': plate_clean
-                })
+                    'violation_plate': plate_clean,
+                    'violation_type': violation.get('type'),
+                    'speed': violation.get('speed'),
+                    'severity': violation.get('severity', 'medium')
+                }
+                matched_users.append(user_data)
+                
+                # Send real-time vibration notification via WebSocket
+                # This will trigger vibration AND show the warning modal on the user's mobile device
+                v_type_clean = violation.get('type', 'traffic_violation').replace('_', ' ').title()
+                async_to_sync(channel_layer.group_send)(
+                    f'vibration_{user.phone_number}',
+                    {
+                        'type': 'send_vibration_alert',
+                        'violation_type': v_type_clean,
+                        'plate_number': plate_clean,
+                        'speed': violation.get('speed'),
+                        'severity': violation.get('severity', 'medium'),
+                        'message': f"{v_type_clean} detected for vehicle {plate_clean}!",
+                        'timestamp': str(timezone.now())
+                    }
+                )
         
         return {
             'status': 'success',

@@ -22,10 +22,12 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('register/',views.register,name='register'),
+    path('test/', lambda request: __import__('django.shortcuts').shortcuts.render(request, 'app/test.html'), name='test'),
     path('login/',views.user_login,name='login'),
+    path('register/',views.register,name='register'),
     path('logout/',views.user_logout,name='logout'),
     path('dashboard/',views.user_dashboard,name='user_dashboard'),
+    path('clear-violations/', views.clear_violations, name='clear_violations'),
     path('main/',views.dashboard,name='dashboard'),
     path('process-video/', views.process_video, name='process_video'),
     path('register-vehicle/', views.register_vehicle, name='register_vehicle'),

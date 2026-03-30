@@ -18,12 +18,22 @@
 
 <body>
 
+    <!-- Navbar -->
+    <div class="neu-navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-shield-alt" style="color: #000; margin-right: 12px;"></i>
+            <span>Traffic Monitor</span>
+        </div>
+        <a href="{% url 'user_dashboard' %}" class="neu-btn" style="text-decoration: none;">
+            <i class="fas fa-user"></i> <span style="display:inline-block; margin-left:5px;">Dashboard</span>
+        </a>
+    </div>
 
     <div class="main-content">
         <div class="upload-section">
-            <h2 class="text-center mb-4"
-                style="font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-                Traffic Monitor Dashboard</h2>
+            <h2 class="text-center mb-4" style="font-weight: 600; color: #2d3748; letter-spacing: -0.5px;">
+                AI Analytics Engine
+            </h2>
             <div class="upload-box" id="upload-box">
                 <div class="text-center">
                     <i class="fas fa-cloud-upload-alt fa-4x mb-3"></i>
@@ -39,10 +49,10 @@
         </div>
 
         <div class="buttons-section">
-            <h3 class="mb-4" style="font-size: 1.5rem; color: var(--text-main);">AI Analysis Suite</h3>
+            <h3 class="mb-4" style="font-size: 1.5rem; color: #2d3748; font-weight: 600; letter-spacing: -0.5px;">Analysis Suite</h3>
             <div class="analysis-options">
                 <div class="option-box" id="detect-vehicles">
-                    <i class="fas fa-car" style="color: #6366f1; margin-right: 10px;"></i> Detect Vehicles and
+                    <i class="fas fa-car" style="color: #000; margin-right: 10px; font-size: 1.2em;"></i> Detect Vehicles and
                     Numberplate
                 </div>
                 <div class="option-box" id="detect-speed">
@@ -58,50 +68,7 @@
         <video id="output-video" controls></video>
     </div>
 
-    <!-- Vehicle Registration Button -->
-    <div style="text-align: center; margin: 20px 0;">
-        <button class="btn-modern" onclick="openRegistrationModal()" style="background: linear-gradient(135deg, #10b981, #059669);">
-            <i class="fas fa-user-plus"></i> Register Your Vehicle for Alerts
-        </button>
-    </div>
 
-    <!-- Vehicle Registration Modal -->
-    <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content glass-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registrationModalLabel"><i class="fas fa-id-card"></i> Register Your Vehicle</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p style="color: #94a3b8; font-size: 0.9em; margin-bottom: 20px;">
-                        Register your phone number and vehicle number to receive vibration alerts when your vehicle is detected violating traffic rules.
-                    </p>
-                    <form id="vehicle-registration-form">
-                        <div class="form-group mb-3">
-                            <label for="reg-phone" style="color: var(--text-main); font-weight: 600;">Mobile Number</label>
-                            <input type="tel" class="form-control" id="reg-phone" placeholder="Enter 10-digit mobile number" 
-                                   pattern="[0-9]{10}" maxlength="10" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main);">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="reg-vehicle" style="color: var(--text-main); font-weight: 600;">Vehicle Number Plate</label>
-                            <input type="text" class="form-control" id="reg-vehicle" placeholder="e.g., DL 2S G 5988" 
-                                   style="text-transform: uppercase; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main);" required>
-                        </div>
-                        <div id="registration-message" style="margin-top: 15px;"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-modern" style="padding: 10px 20px;" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn-modern" onclick="submitVehicleRegistration()" style="padding: 10px 20px; background: linear-gradient(135deg, #10b981, #059669);">
-                        <i class="fas fa-save"></i> Register
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <!-- Results Modal -->
@@ -110,7 +77,7 @@
             <div class="modal-content glass-modal">
                 <div class="modal-header">
                     <h5 class="modal-title" id="resultsModalLabel"><i class="fas fa-poll-h"></i> Analysis Results</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-dark" style="opacity: 0.8;" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
